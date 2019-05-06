@@ -71,8 +71,9 @@ UserSchema.methods.generateToken = async function() {
     avatar: user.avatar,
     name: user.name,
   };
-
-  const generateTokenInfo = {
+  
+  try {
+    const generateTokenInfo = {
     token: jwt.sign(payLoad, secretKey, { expiresIn: '2d' }),
     // to keep expire for token we can do like token: jwt.sign(payLoad, process.env.JWT_SIGNATURE,{
     // expiresIn: '2d' // expires in 24 hours
@@ -80,6 +81,10 @@ UserSchema.methods.generateToken = async function() {
   };
   await user.save();
   return 'Bearer ' + generateTokenInfo.token;
+  }catch(error) {
+  return Promise.reject(error)
+  }
+  
 };
 
 const User = mongoose.model('User', UserSchema);
